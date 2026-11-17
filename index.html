@@ -1,0 +1,244 @@
+<!doctype html>
+<html lang="zh-Hant">
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>服飾店 SQL 實驗室</title>
+<style>
+:root{color-scheme:light;--paper:#f6f3ea;--ink:#202924;--muted:#46564d;--green:#174d36;--line:#c6cfc1}
+*{box-sizing:border-box}body{margin:0;background:var(--paper);color:var(--ink);font:16px/1.65 "Inter","Microsoft JhengHei",sans-serif}header{background:#17392b;color:#f9f6eb}nav,main,.hero{width:min(1080px,92%);margin:auto}nav{display:flex;flex-wrap:wrap;gap:8px 24px;padding:15px 0;border-bottom:1px solid #6c8274}a{color:inherit;text-underline-offset:4px}nav a{text-decoration:none}nav a:hover{text-decoration:underline}.hero{padding:44px 0 48px}.hero p{max-width:640px;margin:14px 0 0;color:#e0eade}h1{margin:0;font-size:clamp(2rem,6vw,3.8rem);line-height:1.14;letter-spacing:-.025em}h2{margin:0 0 14px;font-size:1.65rem}h3{margin:16px 0 8px}section{padding:30px 0;border-bottom:1px solid var(--line)}main{padding-bottom:44px}.split{display:grid;grid-template-columns:minmax(0,1.2fr) minmax(0,1fr);gap:24px}.panel{border:1px solid var(--line);border-radius:12px;background:#fffdf7;padding:16px;min-width:0}.scroll{overflow:auto}table{width:100%;border-collapse:collapse;font-variant-numeric:tabular-nums}th,td{text-align:left;padding:6px 9px;border-bottom:1px solid var(--line);white-space:nowrap}th{background:#e7eee3}pre,textarea,code{font-family:"IBM Plex Mono",Consolas,monospace}pre{margin:0;overflow:auto}textarea,input{width:100%;border:1px solid #899c90;border-radius:8px;padding:10px;font-size:1rem}textarea{min-height:310px;background:#192c24;color:#eff9ef;line-height:1.45;resize:vertical;tab-size:2}button{background:#e6eee4;color:var(--green);border:1px solid #8ea797;border-radius:8px;padding:8px 12px;font:inherit;cursor:pointer}button.primary{background:var(--green);color:white}button:hover{filter:brightness(.93)}button:disabled{opacity:.6;cursor:wait}:focus-visible{outline:3px solid #bc7732;outline-offset:3px}summary{cursor:pointer;font-weight:700}details{padding:9px 0}.actions{display:flex;flex-wrap:wrap;gap:8px;margin:8px 0 12px}.muted{color:var(--muted)}.error{color:#9a221a}label{display:block;font-weight:700;margin-bottom:6px}.answer{white-space:pre-line}.sources{padding-left:22px}@media(max-width:730px){.split{grid-template-columns:minmax(0,1fr)}}
+</style>
+<style>
+:root {
+  --paper: #fff;
+  --ink: #111;
+  --muted: #505050;
+  --green: #111;
+  --line: #d8d8d8;
+}
+body {
+  font-family: Inter, "Segoe UI", "Microsoft JhengHei", sans-serif;
+  border-top: 4px solid #111;
+}
+header { background: #fff; color: var(--ink); }
+nav {
+  width: 100%;
+  min-height: 70px;
+  align-items: center;
+  gap: 10px 26px;
+  padding: 14px clamp(16px, 3vw, 40px);
+  border-bottom: 1px solid var(--line);
+  font-size: .9rem;
+}
+.brand { font-size: 1.05rem; font-weight: 800; margin-right: 4px; }
+.nav-cta, .hero-cta {
+  display: inline-block;
+  border-radius: 6px;
+  background: #111;
+  color: #fff;
+  font-weight: 600;
+  text-decoration: none;
+}
+.nav-cta { margin-left: auto; padding: 8px 16px; }
+.hero {
+  width: 100%;
+  text-align: center;
+  padding: clamp(88px, 12vw, 150px) 20px clamp(72px, 9vw, 110px);
+  background-color: #fafafa;
+  background-image:
+    repeating-linear-gradient(45deg, transparent 0 31px, #eaeaea 31px 32px),
+    repeating-linear-gradient(-45deg, transparent 0 31px, #eaeaea 31px 32px);
+  border-bottom: 1px solid var(--line);
+}
+h1 {
+  font-size: clamp(2.65rem, 6.3vw, 4.5rem);
+  font-weight: 850;
+  line-height: 1.08;
+  letter-spacing: -.038em;
+  text-wrap: balance;
+}
+.hero p {
+  margin: 28px auto 0;
+  max-width: 32em;
+  font-size: clamp(1rem, 2vw, 1.25rem);
+  color: var(--muted);
+  text-wrap: pretty;
+}
+.hero-cta { margin-top: 44px; padding: 13px 24px; }
+.hero-cta:hover, .nav-cta:hover { background: #333; }
+main { width: min(1080px, 92%); }
+section { padding-block: 42px; }
+.panel { background: #fff; }
+th { background: #f2f2f2; }
+textarea, input { border-color: #aaa; }
+textarea { background: #fafafa; color: var(--ink); }
+button { color: var(--ink); background: #f5f5f5; border-color: #bdbdbd; }
+button.primary { background: #111; }
+:focus-visible { outline-color: #555; }
+@media (max-width: 640px) {
+  nav { gap: 8px 16px; }
+  .brand { flex-basis: 100%; }
+  .nav-cta { margin-left: 0; }
+}
+</style>
+<header>
+<nav aria-label="頁內導覽">
+  <a class="brand" href="#overview">服飾店 SQL 實驗室</a>
+  <a href="#design">資料庫設計</a>
+  <a href="#compare">結果比較</a>
+  <a href="#ask">店務問答</a>
+  <a class="nav-cta" href="#practice">SQL 練習</a>
+</nav>
+<div class="hero" id="overview">
+  <h1>服飾店 SQL 實驗室</h1>
+  <p>店員查詢訂單和商品規格，店長統計各款服飾的銷量。動手修改 SQL，看看哪些款式賣出了幾件。</p>
+  <a class="hero-cta" href="#practice">開始 SQL 練習 <span aria-hidden="true">→</span></a>
+</div>
+</header>
+<main>
+<section id="practice"><h2>每款服飾賣了幾件？</h2><p>先使用任一範例，再修改 SQL，執行後比對預期結果。</p>
+<div class="actions"><button type="button" data-example="0">載入 INNER JOIN</button><button type="button" data-example="1">載入 LEFT JOIN</button></div>
+<div class="split">
+<form id="sql-form"><label for="sql">SQL 編輯器</label><textarea id="sql" spellcheck="false" required></textarea><div class="actions"><button class="primary" id="run">執行 SQL</button></div></form>
+<div>
+<div class="panel"><strong id="expected-title">預期結果</strong><div class="scroll" id="expected"></div></div>
+<h3>實際結果</h3><div class="panel"><div id="result" class="scroll" aria-live="polite">按下「執行 SQL」查看結果。</div></div>
+</div></div></section>
+<section id="compare"><h2>同一題，兩種結果</h2>
+<div class="split"><div><h3>INNER JOIN · 有銷量的款式</h3><div id="comparison-a" class="scroll"></div><p>先依款式加總符合訂單狀態的件數，再和商品表做內部連接。針織外套只有已取消的訂單，所以找不到符合的銷量列，結果只剩兩款。</p></div>
+<div><h3>LEFT JOIN · 所有款式</h3><div id="comparison-b" class="scroll"></div><p>以商品表為左表，保留所有款式。針織外套連接不到銷量資料，原值為 <code>NULL</code>，<code>COALESCE</code> 將它轉成 <code>0</code>。其餘兩款維持原件數。</p></div></div></section>
+<section id="design"><h2>資料庫設計</h2>
+<div class="panel"><h3>ERD</h3><pre aria-label="商品對規格、規格對訂單明細、訂單對訂單明細皆為一對多">products  1 ─── 0..N variants
+variants  1 ─── 0..N order_items
+orders    1 ─── 0..N order_items</pre><p>一款商品可有多種顏色與尺寸組合。每筆訂單明細連到一張訂單和一種商品規格。</p></div>
+<h3>欄位說明與樣本資料</h3><p class="muted">PK 為主鍵，FK 為外鍵。下表使用虛構資料。</p>
+<details open><summary>products · 商品</summary><p><code>id</code>（整數，PK）為款式編號，<code>name</code>（文字）為商品名稱。</p><div class="scroll" id="products"></div></details>
+<details open><summary>variants · 商品規格</summary><p><code>id</code>（整數，PK）為規格編號，<code>product_id</code>（整數，FK）對應商品，<code>color</code> 和 <code>size</code>（文字）分別儲存顏色與尺寸。</p><div class="scroll" id="variants"></div></details>
+<details open><summary>orders · 訂單</summary><p><code>id</code>（整數，PK）為訂單編號，<code>status</code>（文字）為訂單狀態。</p><div class="scroll" id="orders"></div></details>
+<details open><summary>order_items · 訂單明細</summary><p><code>order_id</code> 和 <code>variant_id</code>（整數，FK）分別對應訂單和商品規格，兩欄共同構成主鍵。<code>quantity</code>（正整數）為該規格的購買件數。</p><div class="scroll" id="order_items"></div></details>
+</section>
+<section id="ask"><h2>店務問答</h2><p>輸入問題，搜尋訪談建立的店務規則。回答下方會列出引用的原始問題。</p>
+<form id="ask-form"><label for="question">你的問題</label><input id="question" required maxlength="500" placeholder="已取消的訂單會計入銷量嗎？">
+<div class="actions"><button class="primary">送出問題</button><button type="button" data-question="資料庫給誰使用？">誰會使用？</button><button type="button" data-question="哪些訂單會計入銷量？">哪些訂單計入銷量？</button><button type="button" data-question="如何區分顏色和尺寸？">如何區分商品規格？</button></div></form>
+<div id="reply" class="panel" aria-live="polite">輸入問題或選擇一個範例。</div></section>
+</main>
+<script src="sql-asm.js"></script>
+<script>
+const get = id => document.getElementById(id);
+const make = (tag, text) => Object.assign(document.createElement(tag), {textContent: text});
+const expected = [
+  {columns:['商品','銷量'], rows:[['素色 T 恤',3],['直筒牛仔褲',4]]},
+  {columns:['商品','銷量'], rows:[['素色 T 恤',3],['直筒牛仔褲',4],['針織外套',0]]}
+];
+function table(target, data, showCount = false) {
+  const el = document.createElement('table');
+  const heading = el.createTHead().insertRow();
+  data.columns.forEach(name => {
+    const cell = make('th', name);
+    cell.scope = 'col';
+    heading.append(cell);
+  });
+  const body = el.createTBody();
+  for (const row of data.rows) {
+    const tr = body.insertRow();
+    row.forEach(value => tr.insertCell().textContent = value ?? 'NULL');
+  }
+  target.replaceChildren(el);
+  if (showCount) target.append(make('p', data.truncated ? '顯示前 100 筆結果。' : '共 ' + data.rows.length + ' 筆結果。'));
+}
+const lesson = {"schema": "\nCREATE TABLE products(id INTEGER PRIMARY KEY, name TEXT NOT NULL);\nCREATE TABLE variants(id INTEGER PRIMARY KEY, product_id INTEGER NOT NULL REFERENCES products(id), color TEXT NOT NULL, size TEXT NOT NULL, UNIQUE(product_id,color,size));\nCREATE TABLE orders(id INTEGER PRIMARY KEY, status TEXT NOT NULL);\nCREATE TABLE order_items(order_id INTEGER NOT NULL REFERENCES orders(id), variant_id INTEGER NOT NULL REFERENCES variants(id), quantity INTEGER NOT NULL CHECK(quantity > 0), PRIMARY KEY(order_id,variant_id));\nINSERT INTO products VALUES (1,'素色 T 恤'),(2,'直筒牛仔褲'),(3,'針織外套');\nINSERT INTO variants VALUES (11,1,'白','M'),(12,1,'黑','L'),(21,2,'藍','M'),(31,3,'米白','S');\nINSERT INTO orders VALUES (101,'已付款'),(102,'已出貨'),(103,'已完成'),(104,'已取消');\nINSERT INTO order_items VALUES (101,11,2),(102,12,1),(103,21,4),(104,31,3);\n", "queries": ["WITH sales AS (\n  SELECT v.product_id, SUM(i.quantity) AS units\n  FROM variants AS v\n  JOIN order_items AS i ON i.variant_id = v.id\n  JOIN orders AS o ON o.id = i.order_id\n  AND o.status IN ('已付款', '已出貨', '已完成')\n  GROUP BY v.product_id\n)\nSELECT p.name AS 商品, s.units AS 銷量\nFROM products AS p\nJOIN sales AS s ON s.product_id = p.id\nORDER BY p.id;", "WITH sales AS (\n  SELECT v.product_id, SUM(i.quantity) AS units\n  FROM variants AS v\n  JOIN order_items AS i ON i.variant_id = v.id\n  JOIN orders AS o ON o.id = i.order_id\n  AND o.status IN ('已付款', '已出貨', '已完成')\n  GROUP BY v.product_id\n)\nSELECT p.name AS 商品, COALESCE(s.units, 0) AS 銷量\nFROM products AS p\nLEFT JOIN sales AS s ON s.product_id = p.id\nORDER BY p.id;"], "sources": [["規則 1｜使用者", "資料庫給誰使用？", "店員與店長會使用這套資料庫。", ["店員", "店長", "誰", "使用者", "人員", "用途"]], ["規則 2｜銷量", "哪些訂單計入銷量？", "已付款、已出貨與已完成的訂單，其商品件數計入銷量。", ["訂單", "銷量", "付款", "出貨", "完成", "取消", "未付款", "計入", "銷售"]], ["規則 3｜商品規格", "商品如何區分規格？", "每款商品依顏色和尺寸區分規格。", ["顏色", "尺寸", "大小", "規格", "款式", "商品層級", "sku", "尺碼"]]]};
+const engine = initSqlJs();
+async function execute(sql) {
+  const SQL = await engine;
+  const db = new SQL.Database();
+  try {
+    db.run(lesson.schema);
+    db.run('PRAGMA query_only = ON');
+    const statement = db.prepare(sql);
+    try {
+      const columns = statement.getColumnNames();
+      if (!columns.length) throw new Error('請輸入會回傳欄位的查詢，例如 SELECT。');
+      const rows = [];
+      while (rows.length < 101 && statement.step()) rows.push(statement.get());
+      return {columns, rows:rows.slice(0,100), truncated:rows.length > 100};
+    } finally { statement.free(); }
+  } finally { db.close(); }
+}
+function retrieve(question) {
+  const normalized = question.toLowerCase().trim();
+  const sources = lesson.sources.map(([title, source, rule, words]) => ({
+    title, source, rule, score:words.filter(word => normalized.includes(word)).length
+  })).filter(hit => hit.score).sort((a,b) => b.score - a.score);
+  return {sources, answer:sources.map(hit => hit.rule).join('\n') ||
+    '三條店務規則中找不到相關資料。可以詢問使用者、銷量計算或商品規格。'};
+}
+async function call(path, text) {
+  if (path === '/ask') return retrieve(text);
+  if (path === '/sql') return execute(text);
+  const names = ['products','variants','orders','order_items'];
+  const tables = await Promise.all(names.map(async name => [name, await execute('SELECT * FROM ' + name)]));
+  return {queries:lesson.queries, tables:Object.fromEntries(tables)};
+}
+function report(target, error) {
+  const p = make('p', error.message);
+  p.className = 'error';
+  target.replaceChildren(p);
+}
+let queries;
+function load(index) {
+  if (!queries) return;
+  get('sql').value = queries[index];
+  get('expected-title').textContent = index ? 'LEFT JOIN 範例的預期結果' : 'INNER JOIN 範例的預期結果';
+  table(get('expected'), expected[index]);
+  get('result').textContent = '按下「執行 SQL」查看結果。';
+}
+table(get('comparison-a'),expected[0]);
+table(get('comparison-b'),expected[1]);
+get('run').disabled = true;
+call('/data').then(data => {
+  queries = data.queries;
+  for (const [name, rows] of Object.entries(data.tables)) table(get(name), rows);
+  load(0);
+  get('run').disabled = false;
+}).catch(error => report(get('result'),error));
+const examples = document.querySelectorAll('[data-example]');
+examples.forEach(button => button.onclick = () => load(Number(button.dataset.example)));
+get('sql-form').onsubmit = async event => {
+  event.preventDefault();
+  get('run').disabled = true;
+  examples.forEach(button => button.disabled = true);
+  const target = get('result');
+  target.textContent = '執行中…';
+  try { table(target, await call('/sql', get('sql').value), true); }
+  catch(error) { report(target,error); }
+  finally {
+    get('run').disabled = false;
+    examples.forEach(button => button.disabled = false);
+  }
+};
+const askForm = get('ask-form');
+document.querySelectorAll('[data-question]').forEach(button => button.onclick = () => {
+  get('question').value = button.dataset.question;
+  askForm.requestSubmit();
+});
+askForm.onsubmit = async event => {
+  event.preventDefault();
+  const buttons = [...askForm.querySelectorAll('button')];
+  buttons.forEach(button => button.disabled = true);
+  const target = get('reply');
+  target.textContent = '搜尋店務規則中…';
+  try {
+    const data = await call('/ask', get('question').value);
+    const answer = make('div', data.answer);
+    answer.className = 'answer';
+    target.replaceChildren(answer);
+    if (data.sources.length) {
+      const list = document.createElement('ul');
+      list.className = 'sources';
+      data.sources.forEach(source => list.append(make('li', source.title + '（訪談題目「' + source.source + '」）')));
+      target.append(list);
+    }
+  } catch(error) { report(target,error); }
+  finally { buttons.forEach(button => button.disabled = false); }
+};
+</script>
+</html>
